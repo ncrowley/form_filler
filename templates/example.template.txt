@@ -1,0 +1,9 @@
+{# template/example.template.txt #}
+
+Hello {{name}}!
+
+This is an example template generated on {{date}} to showcase
+what you can do with these templates!
+
+Sincerely,
+Nick

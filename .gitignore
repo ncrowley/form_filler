@@ -1,1 +1,5 @@
 venv
+!templates/example.*
+templates/*
+*.swp
+__pycache__
