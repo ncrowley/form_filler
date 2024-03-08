@@ -5,17 +5,18 @@ from jinja2 import (
     meta,
 )
 
-'''
+"""
 Current goals:
     scan a template and determine the require fields that need to be populated
     take input data from console and build a single output from a template
 Long term goals:
     take input data from a CSV and build multiple outputs
-'''
+"""
 
 template_dir = "../templates"
 template_path = "example.template.txt"
 output_path = "../output/example.output.txt"
+
 
 def main():
     # Init jinja environment
@@ -43,12 +44,26 @@ def main():
     rendering = template.render(var_dict)
     print("rendering: ", rendering)
 
+
 # To be finished, let's get jinja parsing working and file output working first
 def build_parser():
     parser = argparse.ArgumentParser(description="Process some templates")
-    parser.add_argument('template', metavar='t', type=argparse.FileType('r'), help="The jinja template file", required=True)
-    parser.add_argument('output_filename', metavar='o', type=argparse.FileType('w'), help="The output file destination", required=True)
+    parser.add_argument(
+        "template",
+        metavar="t",
+        type=argparse.FileType("r"),
+        help="The jinja template file",
+        required=True,
+    )
+    parser.add_argument(
+        "output_filename",
+        metavar="o",
+        type=argparse.FileType("w"),
+        help="The output file destination",
+        required=True,
+    )
     return parser
+
 
 if __name__ == "__main__":
     main()
