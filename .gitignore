@@ -1,5 +1,9 @@
-venv
-!templates/example.*
+data/*
+!data/example.*
+output/*
 templates/*
+!templates/example.*
+venv
+
 *.swp
 __pycache__
