@@ -11,15 +11,24 @@ import os
 """
 Current goals:
     allow user to specify output file name variables
+    allow user to input a csv with different separators than commas
 Long term goals:
-    maybe break argument stuff out into another module
+    maybe break things out into different modules
 """
-
+class InvalidDelimiterError(Exception):
+    pass
 
 def main():
     parser = build_parser()
-    args = vars(parser.parse_args())
+    try:
+        args = vars(parser.parse_args())
+    except InvalidDelimiterError as e:
+        print(f"Invalid csv delimiter: {str(e)}")
+        print("Delimiter must be one character")
+        quit()
+
     data_path = None if not "data_src" in args.keys() else args["data_src"]
+    csv_delimiter = None if not "csv_delimiter" in args.keys() else args["csv_delimiter"]
     output_path = args["output"]
     template_dir = os.path.split(args["template"].name)[0]
     template_file = os.path.split(args["template"].name)[1]
@@ -28,7 +37,7 @@ def main():
 
     # Start a loop to get input from user for those fields
     undeclared_vars = get_undeclared_vars(environment, template_file)
-    input_data = build_input_data(data_path, undeclared_vars)
+    input_data = build_input_data(data_path, undeclared_vars, csv_delimiter)
 
     template = environment.get_template(template_file)
     # Now feed those values back in to the template and output to the output file
@@ -41,10 +50,11 @@ def init_jinja(template_dir):
     return Environment(loader=FileSystemLoader(template_dir))
 
 
-def get_csv_data(data_path):
+def get_csv_data(data_path, csv_delimiter):
     retval = []
+    csv_delimiter = "," if csv_delimiter == None else csv_delimiter
     with open(data_path.name, newline="") as csvfile:
-        reader = csv.reader(csvfile, delimiter=",")
+        reader = csv.reader(csvfile, delimiter=csv_delimiter)
         for row_num, row in enumerate(reader):
             retval.append(row)
     return retval
@@ -77,10 +87,10 @@ def get_undeclared_vars(environment, template_file):
     return meta.find_undeclared_variables(parsed_content)
 
 
-def build_input_data(data_path, undeclared_vars):
+def build_input_data(data_path, undeclared_vars, csv_delimiter):
     retval = []
     if data_path:
-        retval = get_csv_data(data_path)
+        retval = get_csv_data(data_path, csv_delimiter)
         found_vars = []
         for item in retval[0]:
             if item in undeclared_vars:
@@ -145,14 +155,18 @@ def build_parser():
         help="The output file location, tags can be used to create unique filenames / paths for the output.",
         required=True,
     )
+    parser.add_argument(
+        "--csv-delimiter",
+        type=delimiter_validator,
+        help="Set a custom csv delimiter.",
+    )
     return parser
 
 
-def dir_path(string):
-    if os.path.isdir(string):
-        return string
-    else:
-        raise NotADirectoryError(string)
+def delimiter_validator(string):
+    if len(string) < 1 or len(string) > 1:
+        raise InvalidDelimiterError(string)
+    return string
 
 
 if __name__ == "__main__":

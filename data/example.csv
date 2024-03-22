@@ -1,4 +1,4 @@
-name,date
-Nick,3/8/2024
-Gerry,2/10/1993
-Howdy,9/9/1999
+name,date,extra_section
+Nick,3/8/2024,true
+Gerry,2/10/1993,false
+Howdy,9/9/1999,true

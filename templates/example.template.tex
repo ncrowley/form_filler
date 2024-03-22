@@ -1,0 +1,36 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{lipsum}
+
+% Set margins
+\geometry{
+  left=2cm,
+  right=2cm,
+  top=3cm,
+  bottom=3cm,
+}
+
+\begin{document}
+
+\begin{center}
+\textbf{Document Title}
+\end{center}
+
+\vspace{1cm}
+
+This is a LaTex document. Authored by {{name}} on {{date}} used to demonstrate usage of
+this form filler tool in conjunction with LaTex. On a system with LaTex installed use
+the command "pdflatex (filename)" to generate this into a PDF.
+
+Value of extra section: {{extra_section}}
+
+% All data is parsed as a string and must be compared as such
+{% if extra_section|lower == "true" %}
+This is an extra section included or not based on a flag in the template.
+{% endif %}
+
+\vspace{1cm}
+
+\lipsum[1-2] % Example text, replace with your content
+
+\end{document}
